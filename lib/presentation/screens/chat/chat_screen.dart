@@ -1,7 +1,10 @@
+import 'package:chat_app/domain/entities/message.dart';
+import 'package:chat_app/presentation/providers/chat_provider.dart';
 import 'package:chat_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:chat_app/presentation/widgets/chat/my_message_bubble.dart';
 import 'package:chat_app/presentation/widgets/shared/message_field_box.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -27,6 +30,12 @@ class ChatScreen extends StatelessWidget {
 class _ChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // ESTO EXTIENDE EL BUILDCONTEXT
+    // ESTO VA A ESTAR PENDIENTE DE LOS CAMBIOS
+    // DE LA CLASE CHATPROVIDER
+    // ESTAMOS BUSCANDO LA INSTANCIA DE CHAT PROVIDER
+    final chatProvider = context.watch<ChatProvider>();
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -34,15 +43,21 @@ class _ChatView extends StatelessWidget {
           children: [
             Expanded(
                 child: ListView.builder(
-              itemCount: 100,
+              // AQUI SE ENLAZA EL CONTROLLER
+              controller: chatProvider.chatScrollController,
+              itemCount: chatProvider.messageList.length,
               itemBuilder: (context, index) {
-                return (index % 2 == 0)
-                    ? const HerMessageBubble()
-                    : const MyMessageBubble();
+                // TOMAR INSTANCIA DEL MESSAGE
+                final message = chatProvider.messageList[index];
+                return (message.fromWho == FromWho.me)
+                    ? MyMessageBubble(message: message)
+                    : HerMessageBubble(message: message);
               },
             )),
             // CAJA DE TEXTO DE MENSAJES
-            const MessageFieldBox()
+            MessageFieldBox(
+              onValue: (value) => chatProvider.sendMessage(value),
+            )
           ],
         ),
       ),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class MessageFieldBox extends StatelessWidget {
-  const MessageFieldBox({super.key});
+  const MessageFieldBox({super.key, required this.onValue});
+
+  // EL ONVALUE SE UTILIZA PARA REGRESAR EL VALOR
+  final ValueChanged<String> onValue;
 
   @override
   Widget build(BuildContext context) {
     //final colors = Theme.of(context).colorScheme;
-
     final textController = TextEditingController();
     final focusNode = FocusNode();
 
@@ -22,8 +24,9 @@ class MessageFieldBox extends StatelessWidget {
       suffixIcon: IconButton(
           onPressed: () {
             final textValue = textController.value.text;
-            print('button: $textValue');
+            //print('button: $textValue');
             textController.clear();
+            onValue(textValue);
           },
           icon: const Icon(Icons.send_outlined)),
     );
@@ -36,10 +39,11 @@ class MessageFieldBox extends StatelessWidget {
       controller: textController,
       decoration: inputDecoration,
       onFieldSubmitted: (value) {
-        print('Submit value $value');
+        //print('Submit value $value');
         textController.clear();
         // DESPUES DE QUE SE LIMPIA SIEMPRE VOY A QUERER EL FOCUS AHI
         focusNode.requestFocus();
+        onValue(value);
       },
     );
   }
