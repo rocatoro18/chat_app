@@ -1,4 +1,4 @@
-enum FromWho { mine, hers }
+enum FromWho { me, hers }
 
 // ESTA ES LA ENTIDAD DE COMO LUCIRAN NUESTRO MENSAJES
 class Message {
